@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using APICatalogo.Context;
-using APICatalogo.Models;
+using Infrastructure.Context;
+using Domain.Models;
 
 namespace APICatalogo.Controllers
 {

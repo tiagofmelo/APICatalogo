@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 
-namespace APICatalogo.Models;
+namespace Domain.Models;
 
 public class Categoria
 {
