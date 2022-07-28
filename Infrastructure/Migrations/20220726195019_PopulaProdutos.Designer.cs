@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace APICatalogo.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220726193258_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20220726195019_PopulaProdutos")]
+    partial class PopulaProdutos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

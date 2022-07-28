@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace APICatalogo.Migrations
+namespace Infrastructure.Migrations
 {
     public partial class InitialMigration : Migration
     {

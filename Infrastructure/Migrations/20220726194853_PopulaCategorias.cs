@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace APICatalogo.Migrations
+namespace Infrastructure.Migrations
 {
     public partial class PopulaCategorias : Migration
     {
