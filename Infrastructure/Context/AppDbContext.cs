@@ -12,34 +12,11 @@ public class AppDbContext : DbContext
     public DbSet<Categoria>? Categorias { get; set; }
     public DbSet<Produto>? Produtos { get; set; }
 
-    //protected override void OnModelCreating(ModelBuilder modelBuilder)
-    //{
-    //    base.OnModelCreating(modelBuilder);
-
-    //    new CategoriaConfiguration(modelBuilder.Entity<Categoria>());
-    //    new ProdutoConfiguration(modelBuilder.Entity<Produto>());
-    //}
-
-    protected override void OnModelCreating(ModelBuilder mb)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //categoria
-        mb.Entity<Categoria>().HasKey(c => c.CategoriaId);
-        mb.Entity<Categoria>().Property(c => c.Nome)
-                              .HasMaxLength(100)
-                              .IsRequired();
-        mb.Entity<Categoria>().Property(c => c.ImagemUrl).HasMaxLength(150).IsRequired();
+        base.OnModelCreating(modelBuilder);
 
-        //produto
-        mb.Entity<Produto>().HasKey(c => c.ProdutoId);
-        mb.Entity<Produto>().Property(c => c.Nome).HasMaxLength(100).IsRequired();
-        mb.Entity<Produto>().Property(c => c.Descricao).HasMaxLength(150);
-        mb.Entity<Produto>().Property(c => c.ImagemUrl).HasMaxLength(100);
-        mb.Entity<Produto>().Property(c => c.Preco).HasPrecision(14, 2);
-
-        //relacionamento
-        mb.Entity<Produto>()
-            .HasOne<Categoria>(c => c.Categoria)
-              .WithMany(p => p.Produtos)
-                .HasForeignKey(c => c.CategoriaId);
+        new CategoriaConfiguration(modelBuilder.Entity<Categoria>());
+        new ProdutoConfiguration(modelBuilder.Entity<Produto>());
     }
 }
