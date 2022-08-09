@@ -2,11 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Context;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace APICatalogo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProdutosController : ControllerBase
     {
         private readonly AppDbContext _context;
