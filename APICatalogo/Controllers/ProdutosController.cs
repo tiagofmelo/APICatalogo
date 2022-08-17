@@ -4,6 +4,7 @@ using Infrastructure.Context;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Infrastructure.Repository.Interface;
 
 namespace APICatalogo.Controllers
 {
@@ -12,9 +13,9 @@ namespace APICatalogo.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProdutosController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUnitOfWork _context;
 
-        public ProdutosController(AppDbContext context)
+        public ProdutosController(IUnitOfWork context)
         {
             _context = context;
         }
@@ -22,21 +23,21 @@ namespace APICatalogo.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetProdutos()
         {
-          if (_context.Produtos == null)
-          {
-              return NotFound();
-          }
-            return await _context.Produtos.AsNoTracking().ToListAsync();
+            if (_context.ProdutoRepository == null)
+            {
+                return NotFound();
+            }
+            return await _context.ProdutoRepository.Get().ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Produto>> GetProduto(int id)
         {
-          if (_context.Produtos == null)
-          {
-              return NotFound();
-          }
-            var produto = await _context.Produtos.FindAsync(id);
+            if (_context.ProdutoRepository == null)
+            {
+                return NotFound();
+            }
+            var produto = await _context.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
             if (produto == null)
             {
@@ -54,23 +55,8 @@ namespace APICatalogo.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(produto).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProdutoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.ProdutoRepository.Update(produto);
+            await _context.Commit();
 
             return NoContent();
         }
@@ -78,12 +64,12 @@ namespace APICatalogo.Controllers
         [HttpPost]
         public async Task<ActionResult<Produto>> PostProduto(Produto produto)
         {
-          if (_context.Produtos == null)
-          {
-              return Problem("Entity set 'AppDbContext.Produtos'  is null.");
-          }
-            _context.Produtos.Add(produto);
-            await _context.SaveChangesAsync();
+            if (_context.ProdutoRepository == null)
+            {
+                return Problem("Entity set 'AppDbContext.Produtos'  is null.");
+            }
+            _context.ProdutoRepository.Add(produto);
+            await _context.Commit();
 
             return CreatedAtAction("GetProduto", new { id = produto.ProdutoId }, produto);
         }
@@ -91,25 +77,20 @@ namespace APICatalogo.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduto(int id)
         {
-            if (_context.Produtos == null)
+            if (_context.ProdutoRepository == null)
             {
                 return NotFound();
             }
-            var produto = await _context.Produtos.FindAsync(id);
+            var produto = await _context.ProdutoRepository.GetById(p => p.ProdutoId == id);
             if (produto == null)
             {
                 return NotFound();
             }
 
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync();
+            _context.ProdutoRepository.Delete(produto);
+            await _context.Commit();
 
             return NoContent();
-        }
-
-        private bool ProdutoExists(int id)
-        {
-            return (_context.Produtos?.Any(e => e.ProdutoId == id)).GetValueOrDefault();
         }
     }
 }
