@@ -7,6 +7,7 @@ using MininalApiCatalogo.Configs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MininalApiCatalogo.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-    
+
+app.MapAtualizaEndpoints();
 app.MapCategoriasEndpoints();
 app.MapProdutosEndpoints();
 

@@ -8,18 +8,15 @@ namespace MininalApiCatalogo.Endpoints
     {
         public static void MapCategoriasEndpoints(this WebApplication app)
         {
-            app.MapGet("/", () => "Catálogo de Produtos - 2022").ExcludeFromDescription();
-
             app.MapPost("/categorias", async (Categoria categoria, AppDbContext db) =>
             {
                 db.Categorias.Add(categoria);
                 await db.SaveChangesAsync();
 
                 return Results.Created($"/categorias/{categoria.CategoriaId}", categoria);
-            });
+            }).RequireAuthorization();
 
-
-            app.MapGet("/categorias", async (AppDbContext db) => await db.Categorias.ToListAsync());
+            app.MapGet("/categorias", async (AppDbContext db) => await db.Categorias.ToListAsync()).RequireAuthorization();
 
             app.MapGet("/categorias/{id:int}", async (int id, AppDbContext db) =>
             {
@@ -27,7 +24,7 @@ namespace MininalApiCatalogo.Endpoints
                              is Categoria categoria
                              ? Results.Ok(categoria)
                              : Results.NotFound();
-            });
+            }).RequireAuthorization();
 
             app.MapPut("/categorias/{id:int}", async (int id, Categoria categoria, AppDbContext db) =>
             {
@@ -46,7 +43,7 @@ namespace MininalApiCatalogo.Endpoints
                 await db.SaveChangesAsync();
 
                 return Results.Ok(categoriaDB);
-            });
+            }).RequireAuthorization();
 
             app.MapDelete("/categorias/{id:int}", async (int id, AppDbContext db) =>
             {
@@ -61,7 +58,7 @@ namespace MininalApiCatalogo.Endpoints
                 await db.SaveChangesAsync();
 
                 return Results.NoContent();
-            });
+            }).RequireAuthorization();
         }
     }
 }
